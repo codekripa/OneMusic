@@ -82,10 +82,6 @@
     transition: background-color 0.3s;
   }
 
-  .song-list li:hover {
-    background-color: #f1f1f1;
-  }
-
   .song-name {
     flex-grow: 1;
   }
@@ -150,4 +146,9 @@
     .nav-btns button {
       font-size: 18px;
     }
+  }
+
+  .songs-container {
+    height: 300px;
+    overflow-x: auto;
   }
