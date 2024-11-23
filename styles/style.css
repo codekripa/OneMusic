@@ -1,0 +1,153 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #444;
+  }
+
+  /* MP3 Player Container */
+  .player-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  /* Audio Player Styling */
+  audio {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  /* Control Buttons */
+  .controls {
+    margin-bottom: 20px;
+  }
+
+  .control-btn {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin: 0 10px;
+  }
+
+  .control-btn:hover {
+    background-color: #45a049;
+  }
+
+  /* Playlist Section */
+  .song-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+  }
+
+  .song-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 18px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+  }
+
+  .song-list li:hover {
+    background-color: #f1f1f1;
+  }
+
+  .song-name {
+    flex-grow: 1;
+  }
+
+  .play-button {
+    padding: 5px 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+
+  .play-button:hover {
+    background-color: #45a049;
+  }
+
+  .playlist-header {
+    font-size: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #444;
+  }
+
+  /* Navigation Buttons (Next / Previous) */
+  .nav-btns {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .nav-btns button {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+
+  .nav-btns button:hover {
+    background-color: #45a049;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .player-container {
+      padding: 15px;
+    }
+
+    .song-list li {
+      font-size: 16px;
+    }
+
+    .control-btn {
+      padding: 8px 16px;
+    }
+
+    .nav-btns button {
+      font-size: 18px;
+    }
+  }

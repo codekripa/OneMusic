@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MP3 Player with Caching</title>
+    <link rel="stylesheet" href="./styles/style.css" />
+  </head>
+  <body>
+    <div class="player-container">
+      <!-- Audio Player -->
+      <audio id="audioPlayer" controls preload="auto">
+        <source
+          src="https://github.com/codekripa/OneMusic/raw/refs/heads/main/songs/Kehna%20Na%20Tum%20Yeh%20Kisi%20Se%20-%20Pati%20Patni%20Aur%20Tawaif%20320%20Kbps.mp3"
+          type="audio/mp3"
+        />
+        Your browser does not support the audio element.
+      </audio>
+
+      <!-- Control Buttons -->
+      <div class="controls">
+        <button class="control-btn" onclick="playAudio()">Play</button>
+        <button class="control-btn" onclick="pauseAudio()">Pause</button>
+      </div>
+
+      <!-- Song List -->
+      <ul class="song-list" id="songList"></ul>
+
+      <!-- Navigation Buttons (Next / Previous) -->
+      <div class="nav-btns">
+        <button onclick="prevSong()">&#9664; Prev</button>
+        <button onclick="nextSong()">Next &#9654;</button>
+      </div>
+    </div>
+
+    <script src="./js/script.js"></script>
+  </body>
+</html>
