@@ -7,10 +7,9 @@
 
   body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #222328;
     color: #333;
     display: flex;
-    justify-content: center;
     align-items: center;
     height: 100vh;
     flex-direction: column;
@@ -24,13 +23,14 @@
 
   /* MP3 Player Container */
   .player-container {
-    background-color: #fff;
+    background-color: #586889;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 90%;
     max-width: 600px;
     padding: 20px;
     text-align: center;
+    height: 145px;
   }
 
   /* Audio Player Styling */
@@ -47,8 +47,8 @@
 
   .control-btn {
     padding: 10px 20px;
-    background-color: #4caf50;
-    color: white;
+    background-color: #65ddff;
+    color: black;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -58,7 +58,7 @@
   }
 
   .control-btn:hover {
-    background-color: #45a049;
+    background-color: #65ddff;
   }
 
   /* Playlist Section */
@@ -75,9 +75,10 @@
     align-items: center;
     margin: 10px 0;
     font-size: 18px;
-    background-color: #f9f9f9;
+    background-color: #586889;
     padding: 10px;
     border-radius: 8px;
+    color: #fff;
     transition: background-color 0.3s;
   }
 
@@ -91,8 +92,7 @@
 
   .play-button {
     padding: 5px 10px;
-    background-color: #4caf50;
-    color: white;
+    background-color: #65ddff;
     border: none;
     cursor: pointer;
     border-radius: 5px;
@@ -100,7 +100,7 @@
   }
 
   .play-button:hover {
-    background-color: #45a049;
+    background-color: #65ddff;
   }
 
   .playlist-header {
@@ -120,8 +120,8 @@
 
   .nav-btns button {
     padding: 10px 20px;
-    background-color: #4caf50;
-    color: white;
+    background-color: #65ddff;
+    color: black;
     border: none;
     border-radius: 5%;
     cursor: pointer;
@@ -130,7 +130,7 @@
   }
 
   .nav-btns button:hover {
-    background-color: #45a049;
+    background-color: #65ddff;
   }
 
   /* Responsive adjustments */

@@ -7,21 +7,6 @@ let currentSongIndex = 0;
 
 let initialLoad = true;
 
-// Caching function using Cache API
-async function cacheFile(url) {
-  if ("caches" in window) {
-    const cache = await caches.open("mp3-cache");
-    const response = await cache.match(url);
-    if (!response) {
-      const fetchResponse = await fetch(url);
-      await cache.put(url, fetchResponse.clone());
-      return fetchResponse;
-    }
-    return response;
-  }
-  return fetch(url); // Fallback to regular fetch if no cache support
-}
-
 // Fetch MP3 files recursively from the GitHub repository
 const repoOwner = "codekripa"; // Replace with your GitHub username
 const repoName = "OneMusic"; // Replace with your repository name
@@ -63,6 +48,8 @@ async function displayMP3Urls() {
       listItem.innerHTML = `<span class="song-name">${song.name}</span>
                                   <button class="play-button" onclick="playSpecificSong(${index})">Play</button>`;
       songListContainer.appendChild(listItem);
+
+      playSpecificSong(currentSongIndex);
     });
   } else {
     console.error("No MP3 files found.");
@@ -73,8 +60,7 @@ async function displayMP3Urls() {
 async function playSpecificSong(index) {
   currentSongIndex = index;
   const song = mp3Files[currentSongIndex];
-  const cachedResponse = await cacheFile(song.url);
-  audio.src = URL.createObjectURL(await cachedResponse.blob());
+  audio.src = song.url;
   audio.play();
 }
 
