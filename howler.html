@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MP3 Player with Seek and Progress</title>
+
+    <link rel="stylesheet" href="./styles/player.css" />
+  </head>
+  <body>
+    <h1>One Player</h1>
+    <ul id="songList"></ul>
+
+    <div class="btns_container">
+      <button onclick="playSong()">Play</button>
+      <button onclick="pauseSong()">Pause</button>
+      <button onclick="nextSong()">Next</button>
+      <button onclick="previousSong()">Previous</button>
+    </div>
+
+    <p id="nowPlaying">Now Playing:</p>
+
+    <div id="progress">
+      <input
+        type="range"
+        id="seekBar"
+        min="0"
+        max="100"
+        value="0"
+        step="1"
+        oninput="seekSong(this.value)"
+      />
+      <p>
+        <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+      </p>
+    </div>
+  </body>
+</html>
+
+<script src="./js//howler/howler.min.js"></script>
+<script src="./js/player.js"></script>

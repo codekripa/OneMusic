@@ -10,7 +10,6 @@ let initialLoad = true;
 // Fetch MP3 files recursively from the GitHub repository
 const repoOwner = "codekripa"; // Replace with your GitHub username
 const repoName = "OneMusic"; // Replace with your repository name
-const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/`;
 
 async function getMP3FilesRecursive(path = "") {
   const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
@@ -48,11 +47,36 @@ async function displayMP3Urls() {
       listItem.innerHTML = `<span class="song-name">${song.name}</span>
                                   <button class="play-button" onclick="playSpecificSong(${index})">Play</button>`;
       songListContainer.appendChild(listItem);
-
-      playSpecificSong(currentSongIndex);
     });
+
+    playSpecificSong(currentSongIndex);
   } else {
     console.error("No MP3 files found.");
+  }
+}
+
+// Update media session metadata
+function updateMediaSessionMetadata() {
+  if ("mediaSession" in navigator) {
+    const currentSong = mp3Files[currentSongIndex];
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: currentSong.name,
+      artist: "Unknown Artist", // Replace with dynamic artist info if available
+      album: "One Player", // Replace with album info if available
+      artwork: [
+        {
+          src: "./asset/player.jpeg", // Add artwork URL if available
+          sizes: "512x512",
+          type: "image/jpeg",
+        },
+      ],
+    });
+
+    // Define media session actions
+    navigator.mediaSession.setActionHandler("play", playAudio);
+    navigator.mediaSession.setActionHandler("pause", pauseAudio);
+    navigator.mediaSession.setActionHandler("previoustrack", prevSong);
+    navigator.mediaSession.setActionHandler("nexttrack", nextSong);
   }
 }
 
@@ -62,6 +86,7 @@ async function playSpecificSong(index) {
   const song = mp3Files[currentSongIndex];
   audio.src = song.url;
   audio.play();
+  updateMediaSessionMetadata();
 }
 
 // Next song
@@ -85,14 +110,17 @@ function prevSong() {
 }
 
 function playAudio() {
-    if (initialLoad) nextSong(); else audio.play();
+  if (initialLoad) nextSong();
+  else audio.play();
 
-    initialLoad = false;
+  initialLoad = false;
 }
 
 function pauseAudio() {
-    audio.pause();
+  audio.pause();
 }
+
+audio.addEventListener("ended", nextSong);
 
 // Initialize
 displayMP3Urls();
