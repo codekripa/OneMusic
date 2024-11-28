@@ -9,7 +9,7 @@ let initialLoad = true;
 
 // Fetch MP3 files recursively from the GitHub repository
 const repoOwner = "codekripa"; // Replace with your GitHub username
-const repoName = "OneMusic"; // Replace with your repository name
+let repoName = "OneMusic"; // Replace with your repository name
 
 async function getMP3FilesRecursive(path = "") {
   const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
@@ -42,6 +42,7 @@ async function displayMP3Urls() {
     audio.src = mp3Files[currentSongIndex].url;
 
     const songListContainer = document.getElementById("songList");
+    songListContainer.innerHTML = '';
     mp3Files.forEach((song, index) => {
       const listItem = document.createElement("li");
       listItem.innerHTML = `<span class="song-name">${song.name}</span>
@@ -119,6 +120,14 @@ function playAudio() {
 function pauseAudio() {
   audio.pause();
 }
+
+function setSource(repo) {
+  console.log('repo', repo);
+
+  repoName = repo;
+  displayMP3Urls();
+}
+
 
 audio.addEventListener("ended", nextSong);
 
