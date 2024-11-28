@@ -122,8 +122,6 @@ function pauseAudio() {
 }
 
 function setSource(repo) {
-  console.log('repo', repo);
-
   repoName = repo;
   displayMP3Urls();
 }
