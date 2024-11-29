@@ -214,3 +214,103 @@ audio {
 .category-btn:focus {
   outline: none;
 }
+
+
+/* Seek Container */
+.seek-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #b3b3b3; /* Light gray text */
+}
+
+#seek-bar {
+  width: 100%;
+  margin: 0 10px;
+  background-color: #333; /* Dark background for the seek bar */
+  height: 8px;
+  border-radius: 5px;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+#seek-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background-color: #1db954; /* Green thumb */
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#seek-bar::-webkit-slider-thumb:hover {
+  background-color: #1ed760; /* Lighter Green on hover */
+}
+
+#seek-bar::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  background-color: #1db954;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+#seek-bar::-moz-range-thumb:hover {
+  background-color: #1ed760; /* Lighter Green on hover */
+}
+
+#seek-bar::-ms-thumb {
+  width: 15px;
+  height: 15px;
+  background-color: #1db954;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+#seek-bar::-ms-thumb:hover {
+  background-color: #1ed760; /* Lighter Green on hover */
+}
+
+/* Time Display */
+#current-time,
+#total-time {
+  font-size: 14px;
+  color: #b3b3b3; /* Light gray */
+  width: 50px;
+  text-align: center;
+}
+
+
+
+/* Dolby Toggle Button */
+.dolby-toggle {
+  margin-top: 20px;
+}
+
+.toggle-dolby-btn {
+  background-color: #1db954;
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-size: 18px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.toggle-dolby-btn:hover {
+  background-color: #1ed760;
+}
+
+.toggle-dolby-btn:active {
+  background-color: #1a9c47;
+}
+
+.toggle-dolby-btn:focus {
+  outline: none;
+}
