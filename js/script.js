@@ -1,15 +1,12 @@
-// Get reference to the audio element
 let audio = document.getElementById("audioPlayer");
 
-// MP3 file list and current index
 let mp3Files = [];
 let currentSongIndex = 0;
 
 let initialLoad = true;
 
-// Fetch MP3 files recursively from the GitHub repository
-const repoOwner = "codekripa"; // Replace with your GitHub username
-let repoName = "OneMusic"; // Replace with your repository name
+const repoOwner = "codekripa";
+let repoName = "NewSongs";
 
 async function getMP3FilesRecursive(path = "") {
   const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
