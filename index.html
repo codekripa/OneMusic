@@ -10,16 +10,9 @@
     <div class="player-container">
       <!-- Category Buttons -->
       <div class="category-buttons">
-        <button class="category-btn" onclick="setSource('OneMusic')">New</button>
+        <button class="category-btn" onclick="setSource('NewSongs')">New</button>
         <button class="category-btn" onclick="setSource('OldMusic')">Old</button>
         <button class="category-btn" onclick="setSource('bhakti')">Bhakti</button>
-      </div>
-
-      <!-- Control Buttons -->
-      <div class="controls">
-        <button class="control-btn" onclick="prevSong()">&#9664;&#9664;</button>
-        <button id="playPauseButton" class="control-btn" onclick="togglePlayPause()">&#9654;</button>
-        <button class="control-btn" onclick="nextSong()">&#9654;&#9654;</button>
       </div>
 
       <!-- Seek Bar and Time Display -->
@@ -29,10 +22,16 @@
         <span id="total-time">00:00</span>
       </div>
 
-
       <div class="songs-container">
         <!-- Song List -->
         <ul class="song-list" id="songList"></ul>
+      </div>
+
+      <!-- Control Buttons -->
+      <div class="controls">
+        <button class="control-btn" onclick="prevSong()">&#9664;&#9664;</button>
+        <button id="playPauseButton" class="control-btn" onclick="togglePlayPause()">&#9654;</button>
+        <button class="control-btn" onclick="nextSong()">&#9654;&#9654;</button>
       </div>
 
       <!-- "Enable Dolby" button -->
