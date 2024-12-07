@@ -91,7 +91,8 @@ function playSpecificSong(index) {
   sound = new Howl({
     src: [song.url],
     format: formats,  // Use Dolby if enabled
-    html5: false,
+    html5: true, // Enable HTML5 for better compatibility
+    preload: true, // Preload the audio before playing
     autoplay: true,
     onend: nextSong, // Move to the next song when this one ends
     onplay: () => {
