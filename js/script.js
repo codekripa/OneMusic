@@ -56,6 +56,29 @@ async function displayMP3Urls() {
   }
 }
 
+function updateMediaSessionMetadata() {
+  if ("mediaSession" in navigator) {
+    const currentSong = mp3Files[currentSongIndex];
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: currentSong.name,
+      artist: "Unknown Artist",
+      album: "One Player",
+      artwork: [
+        {
+          src: "./asset/player.jpeg",
+          sizes: "512x512",
+          type: "image/jpeg",
+        },
+      ],
+    });
+    navigator.mediaSession.setActionHandler("play", togglePlayPause);
+    navigator.mediaSession.setActionHandler("pause", togglePlayPause);
+    navigator.mediaSession.setActionHandler("previoustrack", prevSong);
+    navigator.mediaSession.setActionHandler("nexttrack", nextSong);
+  }
+}
+
+
 function playSpecificSong(index) {
   currentSongIndex = index;
   const song = mp3Files[currentSongIndex];
@@ -88,6 +111,8 @@ function playSpecificSong(index) {
       updateSeekBar(); // Update the seek bar
       updateTotalTime(); // Update the total time display
     }
+
+    updateMediaSessionMetadata();
   };
 
   // Start playing the song immediately
