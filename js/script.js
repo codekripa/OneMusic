@@ -7,18 +7,14 @@ let currentTimeInterval; // To store the interval for updating current time
 const repoOwner = "codekripa";
 let repoName = "NewSongs";
 
-// Create an audio element globally
-let audioElement = new Audio();
-audioElement.preload = "auto";
+// Get the audio element
+const audioElement = document.getElementById("audioElement");
 
-// Fetch MP3 files from GitHub repository
 async function getMP3FilesRecursive(path = "") {
   const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
-
   try {
     const response = await fetch(url);
     const files = await response.json();
-
     let mp3Files = [];
     for (let file of files) {
       if (file.type === "file" && file.name.endsWith(".mp3")) {
@@ -40,15 +36,13 @@ async function getMP3FilesRecursive(path = "") {
 async function displayMP3Urls() {
   mp3Files = await getMP3FilesRecursive();
   if (mp3Files.length > 0) {
-    // Play the first song
     playSpecificSong(currentSongIndex);
-
     const songListContainer = document.getElementById("songList");
     songListContainer.innerHTML = '';
     mp3Files.forEach((song, index) => {
       const listItem = document.createElement("li");
       listItem.innerHTML = `<span class="song-name">${song.name}</span>
-                                  <button class="play-button" onclick="playSpecificSong(${index})">Play</button>`;
+                            <button class="play-button" onclick="playSpecificSong(${index})">Play</button>`;
       songListContainer.appendChild(listItem);
     });
   } else {
@@ -78,100 +72,71 @@ function updateMediaSessionMetadata() {
   }
 }
 
-
 function playSpecificSong(index) {
   currentSongIndex = index;
   const song = mp3Files[currentSongIndex];
-
-  // Load the song URL into the audio element
   audioElement.src = song.url;
-  audioElement.load(); // Preload the audio file
+  audioElement.load();
 
-  // Set up event listeners for the audio element
   audioElement.onplay = () => {
-    // Start updating the current time continuously when the audio starts
-    isPlaying = true; // Update state to playing
-    updatePlayPauseButton(); // Update button icon
-
-    // Start the interval to update seek bar and current time every second
+    isPlaying = true;
+    updatePlayPauseButton();
     currentTimeInterval = setInterval(() => {
       updateSeekBar();
       updateCurrentTime(audioElement.currentTime);
-    }, 1000); // Update every 1 second
+    }, 1000);
   };
 
-  audioElement.onended = nextSong; // Move to the next song when this one ends
-  audioElement.onseeked = updateSeekBar; // Update seek bar as the song seeks
-  
-  // Update the total time when song metadata is loaded
+  audioElement.onended = nextSong;
+  audioElement.onseeked = updateSeekBar;
   audioElement.onloadmetadata = () => {
-    duration = audioElement.duration; // Set the duration when metadata is loaded
+    duration = audioElement.duration;
     if (!isNaN(duration) && duration > 0) {
-
-      updateSeekBar(); // Update the seek bar
-      updateTotalTime(); // Update the total time display
+      updateSeekBar();
+      updateTotalTime();
     }
-
-    updateMediaSessionMetadata();
   };
 
-  // Start playing the song immediately
-  audioElement.play(); 
+  updateMediaSessionMetadata();
+  audioElement.play();
 }
 
 function togglePlayPause() {
   if (isPlaying) {
     audioElement.pause();
-    clearInterval(currentTimeInterval); // Stop updating the current time
-    isPlaying = false; // Update state to paused
+    clearInterval(currentTimeInterval);
+    isPlaying = false;
   } else {
     audioElement.play();
-    isPlaying = true; // Update state to playing
-
-    // Start updating the current time again
+    isPlaying = true;
     currentTimeInterval = setInterval(() => {
       updateSeekBar();
       updateCurrentTime(audioElement.currentTime);
     }, 1000);
   }
-
-  updatePlayPauseButton(); // Update button icon
+  updatePlayPauseButton();
 }
 
 function updatePlayPauseButton() {
   const playPauseButton = document.getElementById("playPauseButton");
-  if (isPlaying) {
-    playPauseButton.innerHTML = "&#10074;&#10074;"; // Pause icon
-  } else {
-    playPauseButton.innerHTML = "&#9654;"; // Play icon
-  }
+  playPauseButton.innerHTML = isPlaying ? "&#10074;&#10074;" : "&#9654;";
 }
 
 function updateSeekBar() {
-  if (audioElement && !isNaN(duration)) {
-    const currentTime = audioElement.currentTime; // Get current time
+  if (!isNaN(duration)) {
     const seekBar = document.getElementById("seek-bar");
-    
-    // Update the seek bar position
-    seekBar.value = (currentTime / duration) * 100; // Set seek bar value as percentage
-    
-    // Ensure seek bar max value is set correctly
+    seekBar.value = (audioElement.currentTime / duration) * 100;
     seekBar.max = 100;
   }
 }
 
 function updateCurrentTime(currentTime) {
-  const currentTimeDisplay = document.getElementById("current-time");
-  currentTimeDisplay.textContent = formatTime(currentTime);
+  document.getElementById("current-time").textContent = formatTime(currentTime);
 }
 
 function updateTotalTime() {
   const totalTimeDisplay = document.getElementById("total-time");
-  if (!isNaN(duration) && duration > 0) {
-    totalTimeDisplay.textContent = formatTime(duration);
-  } else {
-    totalTimeDisplay.textContent = "00:00"; // Fallback in case duration is not available
-  }
+  totalTimeDisplay.textContent = !isNaN(duration) ? formatTime(duration) : "00:00";
 }
 
 function formatTime(time) {
@@ -182,25 +147,17 @@ function formatTime(time) {
 
 function seekAudio(event) {
   const seekBar = document.getElementById("seek-bar");
-  const seekPosition = (event.target.value / 100) * duration; // Calculate time in seconds
-  audioElement.currentTime = seekPosition; // Seek the audio to the selected position
+  const seekPosition = (event.target.value / 100) * duration;
+  audioElement.currentTime = seekPosition;
 }
 
 function nextSong() {
-  if (currentSongIndex < mp3Files.length - 1) {
-    currentSongIndex++;
-  } else {
-    currentSongIndex = 0;
-  }
+  currentSongIndex = (currentSongIndex + 1) % mp3Files.length;
   playSpecificSong(currentSongIndex);
 }
 
 function prevSong() {
-  if (currentSongIndex > 0) {
-    currentSongIndex--;
-  } else {
-    currentSongIndex = mp3Files.length - 1;
-  }
+  currentSongIndex = (currentSongIndex - 1 + mp3Files.length) % mp3Files.length;
   playSpecificSong(currentSongIndex);
 }
 
@@ -209,5 +166,4 @@ function setSource(repo) {
   displayMP3Urls();
 }
 
-// Initialize
 displayMP3Urls();
