@@ -1,9 +1,5 @@
 let mp3Files = [];
 let currentSongIndex = 0;
-let dolbyEnabled = false;
-
-let initialLoad = true;
-let sound; // This will hold the Howl instance
 let isPlaying = false; // Variable to track play/pause state
 let duration = 0; // Total duration of the current song
 let currentTimeInterval; // To store the interval for updating current time
@@ -11,6 +7,11 @@ let currentTimeInterval; // To store the interval for updating current time
 const repoOwner = "codekripa";
 let repoName = "NewSongs";
 
+// Create an audio element globally
+let audioElement = new Audio();
+audioElement.preload = "auto";
+
+// Fetch MP3 files from GitHub repository
 async function getMP3FilesRecursive(path = "") {
   const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
 
@@ -39,7 +40,7 @@ async function getMP3FilesRecursive(path = "") {
 async function displayMP3Urls() {
   mp3Files = await getMP3FilesRecursive();
   if (mp3Files.length > 0) {
-    // Initialize the Howl instance for the first song
+    // Play the first song
     playSpecificSong(currentSongIndex);
 
     const songListContainer = document.getElementById("songList");
@@ -55,87 +56,63 @@ async function displayMP3Urls() {
   }
 }
 
-// Update media session metadata
-function updateMediaSessionMetadata() {
-  if ("mediaSession" in navigator) {
-    const currentSong = mp3Files[currentSongIndex];
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: currentSong.name,
-      artist: "Unknown Artist",
-      album: "One Player",
-      artwork: [
-        {
-          src: "./asset/player.jpeg",
-          sizes: "512x512",
-          type: "image/jpeg",
-        },
-      ],
-    });
-
-    navigator.mediaSession.setActionHandler("play", togglePlayPause);
-    navigator.mediaSession.setActionHandler("pause", togglePlayPause);
-    navigator.mediaSession.setActionHandler("previoustrack", prevSong);
-    navigator.mediaSession.setActionHandler("nexttrack", nextSong);
-  }
-}
-
 function playSpecificSong(index) {
   currentSongIndex = index;
   const song = mp3Files[currentSongIndex];
 
-  // Create a new Howl instance for the current song
-  if (sound) sound.unload(); // Unload the previous sound instance if any
+  // Load the song URL into the audio element
+  audioElement.src = song.url;
+  audioElement.load(); // Preload the audio file
 
-  const formats = dolbyEnabled ? ['dolby', 'mp3'] : ['mp3']; // Toggle formats based on Dolby
+  // Set up event listeners for the audio element
+  audioElement.onplay = () => {
+    // Start updating the current time continuously when the audio starts
+    isPlaying = true; // Update state to playing
+    updatePlayPauseButton(); // Update button icon
 
-  sound = new Howl({
-    src: [song.url],
-    format: formats,  // Use Dolby if enabled
-    html5: true, // Enable HTML5 for better compatibility
-    preload: true, // Preload the audio before playing
-    autoplay: true,
-    onend: nextSong, // Move to the next song when this one ends
-    onplay: () => {
-      duration = sound.duration(); // Get the total duration of the current song
+    // Start the interval to update seek bar and current time every second
+    currentTimeInterval = setInterval(() => {
+      updateSeekBar();
+      updateCurrentTime(audioElement.currentTime);
+    }, 1000); // Update every 1 second
+  };
+
+  audioElement.onended = nextSong; // Move to the next song when this one ends
+  audioElement.onseeked = updateSeekBar; // Update seek bar as the song seeks
+  
+  // Update the total time when song metadata is loaded
+  audioElement.onloadmetadata = () => {
+    duration = audioElement.duration; // Set the duration when metadata is loaded
+    if (!isNaN(duration) && duration > 0) {
+
       updateSeekBar(); // Update the seek bar
-      updateTotalTime(); // Update the total time
-      isPlaying = true; // Update state to playing
-      updatePlayPauseButton(); // Update button icon
+      updateTotalTime(); // Update the total time display
+    }
+  };
 
-      // Start updating the current time continuously
-      currentTimeInterval = setInterval(() => {
-        updateSeekBar();
-        updateCurrentTime(sound.seek());
-      }, 1000); // Update every 1 second
-    },
-    onseek: updateSeekBar, // Update the seek bar as the song seeks
-    onload: updateTotalTime // Update the total time when song is loaded
-  });
-
-  updateMediaSessionMetadata();
+  // Start playing the song immediately
+  audioElement.play(); 
 }
 
-// Toggle Play/Pause button
 function togglePlayPause() {
   if (isPlaying) {
-    sound.pause();
+    audioElement.pause();
     clearInterval(currentTimeInterval); // Stop updating the current time
     isPlaying = false; // Update state to paused
   } else {
-    sound.play();
+    audioElement.play();
     isPlaying = true; // Update state to playing
 
     // Start updating the current time again
     currentTimeInterval = setInterval(() => {
       updateSeekBar();
-      updateCurrentTime(sound.seek());
+      updateCurrentTime(audioElement.currentTime);
     }, 1000);
   }
 
   updatePlayPauseButton(); // Update button icon
 }
 
-// Update the Play/Pause button icon based on the play state
 function updatePlayPauseButton() {
   const playPauseButton = document.getElementById("playPauseButton");
   if (isPlaying) {
@@ -145,42 +122,45 @@ function updatePlayPauseButton() {
   }
 }
 
-// Update the seek bar position based on the current time
 function updateSeekBar() {
-  if (sound) {
-    const currentTime = sound.seek(); // Get current time
+  if (audioElement && !isNaN(duration)) {
+    const currentTime = audioElement.currentTime; // Get current time
     const seekBar = document.getElementById("seek-bar");
+    
+    // Update the seek bar position
     seekBar.value = (currentTime / duration) * 100; // Set seek bar value as percentage
+    
+    // Ensure seek bar max value is set correctly
+    seekBar.max = 100;
   }
 }
 
-// Update the current time display
 function updateCurrentTime(currentTime) {
   const currentTimeDisplay = document.getElementById("current-time");
   currentTimeDisplay.textContent = formatTime(currentTime);
 }
 
-// Update the total time display
 function updateTotalTime() {
   const totalTimeDisplay = document.getElementById("total-time");
-  totalTimeDisplay.textContent = formatTime(duration);
+  if (!isNaN(duration) && duration > 0) {
+    totalTimeDisplay.textContent = formatTime(duration);
+  } else {
+    totalTimeDisplay.textContent = "00:00"; // Fallback in case duration is not available
+  }
 }
 
-// Format time in mm:ss format
 function formatTime(time) {
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time % 60);
   return `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
 }
 
-// Seek to the specific position in the audio when user interacts with the seek bar
 function seekAudio(event) {
   const seekBar = document.getElementById("seek-bar");
   const seekPosition = (event.target.value / 100) * duration; // Calculate time in seconds
-  sound.seek(seekPosition); // Seek the audio to the selected position
+  audioElement.currentTime = seekPosition; // Seek the audio to the selected position
 }
 
-// Next song
 function nextSong() {
   if (currentSongIndex < mp3Files.length - 1) {
     currentSongIndex++;
@@ -190,7 +170,6 @@ function nextSong() {
   playSpecificSong(currentSongIndex);
 }
 
-// Previous song
 function prevSong() {
   if (currentSongIndex > 0) {
     currentSongIndex--;
@@ -203,16 +182,6 @@ function prevSong() {
 function setSource(repo) {
   repoName = repo;
   displayMP3Urls();
-}
-
-function toggleDolby() {
-  dolbyEnabled = !dolbyEnabled; // Toggle Dolby status
-
-  const button = document.querySelector('.toggle-dolby-btn');
-  button.textContent = dolbyEnabled ? "Disable Dolby" : "Enable Dolby"; // Update button text
-
-  // Reload the current song with the new setting
-  playSpecificSong(currentSongIndex);
 }
 
 // Initialize
