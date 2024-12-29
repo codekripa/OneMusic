@@ -40,7 +40,8 @@ async function displayMP3Urls() {
   mp3Files = await getMP3FilesRecursive();
   if (mp3Files.length > 0) {
     // Initialize the Howl instance for the first song
-    playSpecificSong(currentSongIndex);
+    let songIndex = getSongIndexToLocalStorage(repoName);
+    playSpecificSong(songIndex);
 
     const songListContainer = document.getElementById("songList");
     songListContainer.innerHTML = '';
@@ -81,6 +82,7 @@ function updateMediaSessionMetadata() {
 
 function playSpecificSong(index) {
   currentSongIndex = index;
+  setSongIndexToLocalStorage(repoName, currentSongIndex);
   const song = mp3Files[currentSongIndex];
 
   // Create a new Howl instance for the current song
@@ -187,6 +189,7 @@ function nextSong() {
   } else {
     currentSongIndex = 0;
   }
+
   playSpecificSong(currentSongIndex);
 }
 
@@ -197,6 +200,7 @@ function prevSong() {
   } else {
     currentSongIndex = mp3Files.length - 1;
   }
+
   playSpecificSong(currentSongIndex);
 }
 
@@ -214,6 +218,17 @@ function toggleDolby() {
   // Reload the current song with the new setting
   playSpecificSong(currentSongIndex);
 }
+
+function setSongIndexToLocalStorage(playlistKey, index) {
+  localStorage.setItem(playlistKey, index);
+}
+
+function getSongIndexToLocalStorage(playlistKey) {
+  let songIndex = localStorage.getItem(playlistKey);
+
+  return songIndex ? +songIndex : 0;
+}
+
 
 // Initialize
 displayMP3Urls();
